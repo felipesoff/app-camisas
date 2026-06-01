@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Acesse sua conta na FutCommerce para acompanhar seus pedidos, gerenciar seus endereços e visualizar seus mantos favoritos.">
+    <title>FutCommerce | Área do Cliente</title>
+    <!-- Icons (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- --- GLASS HEADER --- -->
+    <header class="glass scrolled" id="main-header" style="background-color: var(--bg-card); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); padding: 8px 0;">
+        <div class="container navbar">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-circle-nodes"></i>FUT<span>COMMERCE</span>
+            </a>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="index.html">Home</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Futebol Nacional">Nacional</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Futebol Europeu">Europeu</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Seleções">Seleções</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Retrô">Retrô Legends</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" placeholder="Buscar mantos..." class="search-input" id="search-input">
+                    <div class="search-results" id="search-results"></div>
+                </div>
+
+                <a href="profile.html?tab=favs" class="profile-icon" title="Meus Favoritos">
+                    <i class="fa-regular fa-heart"></i>
+                </a>
+
+                <a href="cart.html" class="cart-icon" title="Meu Carrinho">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-count">0</span>
+                </a>
+
+                <a href="profile.html" class="profile-icon" title="Minha Conta" style="background-color: var(--bg-element-light); color: var(--color-volt);">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- PROFILE LAYOUT --- -->
+    <main class="container">
+        <!-- TELA 1: LOGIN (Se não autenticado) -->
+        <div class="admin-login-layout" id="profile-login-container" style="display: none; padding-top: 130px; min-height: 80vh;">
+            <div class="admin-login-card">
+                <div style="font-size: 40px; color: var(--color-volt); margin-bottom: 12px;"><i class="fa-regular fa-circle-user"></i></div>
+                <h2 style="font-weight: 800; font-size: 22px; margin-bottom: 6px; text-transform: uppercase;">Portal do Torcedor</h2>
+                <p style="font-size: 13px; color: var(--color-text-sub); margin-bottom: 24px;">Faça o login com seus dados para prosseguir e finalizar compras.</p>
+                
+                <div class="pay-form-group" style="text-align: left;">
+                    <div>
+                        <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">E-mail do Cliente</label>
+                        <input type="email" placeholder="torcedor@gmail.com" class="pay-input" id="login-email" value="torcedor@gmail.com">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Senha de Acesso</label>
+                        <input type="password" placeholder="123" class="pay-input" id="login-password" value="123">
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="btn-login-submit" style="width: 100%; margin-top: 10px;">Entrar na Loja</button>
+                
+                <div style="margin-top: 20px; font-size: 12px; color: var(--color-text-sub);">
+                    Dica: Use as credenciais pré-preenchidas para testar a plataforma.
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA 2: ÁREA DE CLIENTE AUTENTICADA -->
+        <div class="profile-layout" id="profile-dashboard-container" style="display: none;">
+            <!-- Menu Lateral (Esquerda) -->
+            <div class="profile-menu">
+                <div class="profile-user-card">
+                    <div class="profile-avatar" id="client-avatar-initial">T</div>
+                    <h3 id="client-display-name" style="font-weight: 800; font-size: 18px; margin-bottom: 2px;">Torcedor</h3>
+                    <p id="client-display-email" style="color: var(--color-text-sub); font-size: 12px;">torcedor@gmail.com</p>
+                </div>
+                
+                <ul class="profile-menu-list">
+                    <li class="profile-menu-item active" data-tab="orders" id="menu-tab-orders"><i class="fa-solid fa-receipt" style="width: 20px;"></i> Meus Pedidos</li>
+                    <li class="profile-menu-item" data-tab="addresses" id="menu-tab-addresses"><i class="fa-solid fa-map-location-dot" style="width: 20px;"></i> Endereços</li>
+                    <li class="profile-menu-item" data-tab="favs" id="menu-tab-favs"><i class="fa-regular fa-heart" style="width: 20px;"></i> Favoritos</li>
+                    <li class="profile-menu-item" style="color: var(--color-danger); border-top: 1px solid rgba(255,255,255,0.05); margin-top: 16px;" id="menu-tab-logout"><i class="fa-solid fa-arrow-right-from-bracket" style="width: 20px;"></i> Sair</li>
+                </ul>
+            </div>
+
+            <!-- Conteúdo Principal (Direita) -->
+            <div class="profile-content">
+                
+                <!-- TAB 1: MEUS PEDIDOS -->
+                <div class="profile-section-pane active" id="pane-orders">
+                    <h2 class="section-title text-gradient-volt" style="margin-bottom: 24px; font-size: 20px;">Histórico de Compras</h2>
+                    <div id="orders-list-wrapper">
+                        <!-- Pedidos injetados via JS -->
+                    </div>
+                </div>
+
+                <!-- TAB 2: ENDEREÇOS -->
+                <div class="profile-section-pane" id="pane-addresses">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 class="section-title text-gradient-volt" style="font-size: 20px;">Meus Endereços</h2>
+                        <button class="btn-primary" id="btn-open-address-modal" style="padding: 8px 16px; font-size: 12px;"><i class="fa-solid fa-plus"></i> Novo Endereço</button>
+                    </div>
+                    
+                    <div id="addresses-list-wrapper" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+                        <!-- Endereços injetados via JS -->
+                    </div>
+                </div>
+
+                <!-- TAB 3: FAVORITOS -->
+                <div class="profile-section-pane" id="pane-favs">
+                    <h2 class="section-title text-gradient-volt" style="margin-bottom: 24px; font-size: 20px;">Mantos Favoritados</h2>
+                    <div class="product-grid" id="favorites-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+                        <!-- Grid de favoritos injetado via JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- --- MODAL DE RASTREAMENTO LOGÍSTICO --- -->
+    <div class="admin-modal-overlay" id="tracking-modal">
+        <div class="admin-modal-card" style="max-width: 580px;">
+            <i class="fa-solid fa-xmark popup-close" id="btn-close-tracking-modal"></i>
+
+            <!-- Header do Modal -->
+            <div class="tracking-header">
+                <h3 class="text-gradient-volt" style="font-size: 18px; font-weight: 800; display:flex; align-items:center; gap:10px;">
+                    <i class="fa-solid fa-truck-fast"></i> Rastreamento do Pedido
+                </h3>
+                <div>
+                    <span style="font-size: 11px; color: var(--color-text-sub); display:block; text-align:right;">Código</span>
+                    <span class="tracking-code-pill" id="tracking-code-display">FTX-000000-BR</span>
+                </div>
+            </div>
+
+            <!-- Stepper Visual -->
+            <div class="stepper-container">
+                <div class="stepper" id="tracking-stepper">
+                    <!-- Nó 1: Pedido Aprovado -->
+                    <div class="step-node" id="step-node-1">
+                        <div class="step-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="step-text">Aprovado</div>
+                        <div class="step-date" id="step-date-1">—</div>
+                    </div>
+                    <!-- Nó 2: Embalado -->
+                    <div class="step-node" id="step-node-2">
+                        <div class="step-icon"><i class="fa-solid fa-box"></i></div>
+                        <div class="step-text">Embalado</div>
+                        <div class="step-date" id="step-date-2">—</div>
+                    </div>
+                    <!-- Nó 3: Em Trânsito -->
+                    <div class="step-node" id="step-node-3">
+                        <div class="step-icon"><i class="fa-solid fa-truck"></i></div>
+                        <div class="step-text">Em Trânsito</div>
+                        <div class="step-date" id="step-date-3">—</div>
+                    </div>
+                    <!-- Nó 4: Entregue -->
+                    <div class="step-node" id="step-node-4">
+                        <div class="step-icon"><i class="fa-solid fa-house-chimney-window"></i></div>
+                        <div class="step-text">Entregue</div>
+                        <div class="step-date" id="step-date-4">—</div>
+                    </div>
+                    <!-- Barra de progresso do stepper -->
+                    <div class="stepper-progress" id="stepper-progress-bar"></div>
+                </div>
+            </div>
+
+            <!-- Histórico de Logs Logísticos -->
+            <div class="tracking-log-card">
+                <div class="tracking-log-title">
+                    <i class="fa-solid fa-list-timeline" style="color: var(--color-volt);"></i> Histórico de Eventos
+                </div>
+                <div class="tracking-log-list" id="tracking-log-list">
+                    <!-- Logs injetados via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- MODAL PARA ADICIONAR ENDEREÇO --- -->
+    <div class="admin-modal-overlay" id="address-modal">
+        <div class="admin-modal-card" style="max-width: 500px;">
+            <i class="fa-solid fa-xmark popup-close" id="btn-close-address-modal"></i>
+            <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 20px;" class="text-gradient-volt"><i class="fa-solid fa-house-chimney"></i> Cadastrar Endereço</h3>
+            
+            <div class="pay-form-group">
+                <div class="pay-form-row-2">
+                    <div>
+                        <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Apelido (ex: Casa, Trabalho)</label>
+                        <input type="text" placeholder="Casa" class="pay-input" id="addr-type" required>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">CEP</label>
+                        <input type="text" placeholder="22021-001" class="pay-input" id="addr-cep" maxlength="9" required>
+                    </div>
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Rua/Avenida</label>
+                    <input type="text" placeholder="Av. Atlântica" class="pay-input" id="addr-street" required>
+                </div>
+                <div class="pay-form-row-2">
+                    <div>
+                        <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Número</label>
+                        <input type="text" placeholder="1540" class="pay-input" id="addr-number" required>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Complemento</label>
+                        <input type="text" placeholder="Apto 302" class="pay-input" id="addr-complement">
+                    </div>
+                </div>
+                <div class="pay-form-row-2">
+                    <div>
+                        <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Bairro</label>
+                        <input type="text" placeholder="Copacabana" class="pay-input" id="addr-neighborhood" required>
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Cidade/UF</label>
+                        <div class="pay-form-row-2" style="grid-template-columns: 3fr 1.5fr;">
+                            <input type="text" placeholder="Rio de Janeiro" class="pay-input" id="addr-city" required>
+                            <input type="text" placeholder="RJ" class="pay-input" id="addr-state" maxlength="2" required style="text-transform: uppercase;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-save-address" style="width: 100%; margin-top: 24px;">Salvar Endereço de Entrega</button>
+        </div>
+    </div>
+
+    <!-- --- FOOTER --- -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-column">
+                <h4 class="logo"><i class="fa-solid fa-circle-nodes"></i>FUT<span>COMMERCE</span></h4>
+                <p style="color: var(--color-text-sub); font-size: 14px; margin-top: 10px; max-width: 320px;">
+                    A maior e mais inovadora plataforma esportiva para apaixonados por mantos sagrados. Sinta a emoção do gramado na sua pele.
+                </p>
+                <div style="display: flex; gap: 14px; margin-top: 20px; font-size: 18px;">
+                    <a href="#" style="color: var(--color-volt);"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Categorias</h4>
+                <ul>
+                    <li><a href="index.html?cat=Futebol Nacional">Nacionais</a></li>
+                    <li><a href="index.html?cat=Futebol Europeu">Europeus</a></li>
+                    <li><a href="index.html?cat=Seleções">Seleções</a></li>
+                    <li><a href="index.html?cat=Retrô">Retrô Vintage</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Ajuda & Suporte</h4>
+                <ul>
+                    <li><a href="#">Trocas e Devoluções</a></li>
+                    <li><a href="#">Rastrear Pedido</a></li>
+                    <li><a href="#">Guia de Tamanhos</a></li>
+                    <li><a href="#">Fale Conosco</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Métodos de Pagamento</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; color: var(--color-text-sub); font-size: 24px; margin-top: 10px;">
+                    <i class="fa-brands fa-pix" style="color: #32bcad;" title="PIX"></i>
+                    <i class="fa-brands fa-cc-visa" title="Visa"></i>
+                    <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+                    <i class="fa-brands fa-cc-apple-pay" title="Apple Pay"></i>
+                    <i class="fa-solid fa-barcode" title="Boleto Bancário"></i>
+                </div>
+                <p style="font-size: 12px; color: var(--color-text-sub); margin-top: 20px;">
+                    FutCommerce E-commerce LTDA. CNPJ: 00.000.000/0001-00. Copyright © 2026. Todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            Desenvolvido com <i class="fa-solid fa-heart" style="color: var(--color-danger);"></i> por Antigravity IDE - Pair Programming Partner
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation Bar for Mobile -->
+    <div class="mobile-nav-bar" id="mobile-nav-bar">
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="index.html#catalog-title" class="mobile-nav-item">
+            <i class="fa-solid fa-shirt"></i>
+            <span>Mantos</span>
+        </a>
+        <a href="cart.html" class="mobile-nav-item">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-badge-mobile" id="cart-badge-mobile">0</span>
+            <span>Carrinho</span>
+        </a>
+        <a href="profile.html?tab=favs" class="mobile-nav-item">
+            <i class="fa-solid fa-heart"></i>
+            <span>Favoritos</span>
+        </a>
+        <a href="profile.html" class="mobile-nav-item active">
+            <i class="fa-solid fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+    <!-- --- JS SCRIPTS --- -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <script>
+        window.addEventListener('error', function(event) {
+            alert("Erro global capturado:\nMensagem: " + event.message + "\nArquivo: " + event.filename + "\nLinha: " + event.lineno + ":" + event.colno);
+        });
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Painel de controle administrativo completo do FutCommerce. Gerencie mantos, categorias, estoques, pedidos e campanhas.">
+    <title>FutCommerce | Dashboard Admin</title>
+    <!-- Icons (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <!-- --- TELA 1: LOGIN ADMIN (Se não autenticado) --- -->
+    <div class="admin-login-layout" id="admin-login-container" style="display: flex;">
+        <div class="admin-login-card">
+            <div style="font-size: 44px; color: var(--color-gold); margin-bottom: 12px;"><i
+                    class="fa-solid fa-user-shield"></i></div>
+            <h2 style="font-weight: 800; font-size: 22px; margin-bottom: 6px; text-transform: uppercase;">Acesso
+                Administrativo</h2>
+            <p style="font-size: 13px; color: var(--color-text-sub); margin-bottom: 24px;">Painel exclusivo de gestão do
+                e-commerce FutCommerce.</p>
+
+            <div class="pay-form-group" style="text-align: left;">
+                <div>
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">E-mail
+                        do Administrador</label>
+                    <input type="email" placeholder="Digite seu e-mail" class="pay-input" id="admin-email"
+                        value="" autocomplete="off">
+                </div>
+                <div>
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Senha
+                        Secreta</label>
+                    <input type="password" placeholder="Digite sua senha" class="pay-input" id="admin-password"
+                        value="" autocomplete="new-password">
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-admin-login"
+                style="width: 100%; margin-top: 10px; background-color: var(--color-gold); color: #000;">Entrar no
+                Painel</button>
+            <a href="index.html" class="btn-secondary" style="width: 100%; margin-top: 12px; font-size: 12px;"><i
+                    class="fa-solid fa-house"></i> Voltar Para a Loja</a>
+        </div>
+    </div>
+
+    <div class="admin-layout" id="admin-dashboard-container" style="display: none;">
+        <!-- Cabeçalho Móvel Administrativo -->
+        <header class="admin-mobile-header">
+            <button class="admin-hamburger" id="admin-hamburger-btn" title="Menu lateral">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo" style="font-size: 18px;">
+                <i class="fa-solid fa-circle-nodes" style="color: var(--color-gold);"></i>FUT<span>ADMIN</span>
+            </a>
+            <div style="width: 20px;"></div> <!-- Spacer para centralizar logo -->
+        </header>
+
+        <!-- Barra Lateral Fixa (Esquerda) -->
+        <aside class="admin-sidebar">
+            <div>
+                <a href="index.html" class="logo"
+                    style="font-size: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; margin-bottom: 24px; display: flex;">
+                    <i class="fa-solid fa-circle-nodes" style="color: var(--color-gold);"></i>FUT<span>ADMIN</span>
+                </a>
+
+                <ul class="profile-menu-list">
+                    <li class="profile-menu-item active" data-pane="home" id="admin-tab-home"><i
+                            class="fa-solid fa-chart-pie" style="width: 20px;"></i> Dashboard</li>
+                    <li class="profile-menu-item" data-pane="products" id="admin-tab-products"><i
+                            class="fa-solid fa-shirt" style="width: 20px;"></i> Produtos (CRUD)</li>
+                    <li class="profile-menu-item" data-pane="categories" id="admin-tab-categories"><i
+                            class="fa-solid fa-folder-open" style="width: 20px;"></i> Categorias</li>
+                    <li class="profile-menu-item" data-pane="brands" id="admin-tab-brands"><i class="fa-solid fa-tags"
+                            style="width: 20px;"></i> Marcas</li>
+                    <li class="profile-menu-item" data-pane="orders" id="admin-tab-orders"><i class="fa-solid fa-dolly"
+                            style="width: 20px;"></i> Pedidos</li>
+                    <li class="profile-menu-item" data-pane="marketing" id="admin-tab-marketing"><i
+                            class="fa-solid fa-bullhorn" style="width: 20px;"></i> Marketing Visual</li>
+                    <li class="profile-menu-item" data-pane="coupons" id="admin-tab-coupons"><i
+                            class="fa-solid fa-ticket" style="width: 20px;"></i> Cupons</li>
+                    <li class="profile-menu-item" data-pane="settings" id="admin-tab-settings"><i
+                            class="fa-solid fa-gear" style="width: 20px;"></i> Configurações Gerais</li>
+                </ul>
+            </div>
+
+            <ul class="profile-menu-list">
+                <li class="profile-menu-item" style="color: var(--color-danger);" id="admin-tab-logout"><i
+                        class="fa-solid fa-arrow-right-from-bracket" style="width: 20px;"></i> Sair do Painel</li>
+            </ul>
+        </aside>
+
+        <!-- Área de Conteúdo Dinâmica (Direita) -->
+        <main class="admin-content-area">
+
+            <!-- --- PAINEL 1: DASHBOARD HOME (ESTATÍSTICAS) --- -->
+            <div class="profile-section-pane active" id="pane-admin-home">
+                <div style="margin-bottom: 30px;">
+                    <h2 class="section-title text-gradient-gold" style="font-size: 24px;">Resumo Operacional</h2>
+                    <p style="color: var(--color-text-sub); font-size: 13px;">Estatísticas gerais de vendas e inventário
+                        da FutCommerce.</p>
+                </div>
+
+                <!-- Estatísticas Rápida Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card" style="border-left: 4px solid var(--color-gold);">
+                        <span class="stat-card-title">Faturamento Aprovado</span>
+                        <div class="stat-card-value" id="stat-revenue" style="color: var(--color-gold);">R$ 0,00</div>
+                        <span class="stat-card-footer" style="color: var(--color-gold);">✓ Transações confirmadas</span>
+                    </div>
+                    <div class="stat-card" style="border-left: 4px solid var(--color-success);">
+                        <span class="stat-card-title">Pedidos Totais</span>
+                        <div class="stat-card-value" id="stat-orders">0</div>
+                        <span class="stat-card-footer" style="color: var(--color-success);">✓ Pedidos realizados</span>
+                    </div>
+                    <div class="stat-card" style="border-left: 4px solid var(--color-volt);">
+                        <span class="stat-card-title">Camisas no Catálogo</span>
+                        <div class="stat-card-value" id="stat-products">0</div>
+                        <span class="stat-card-footer" style="color: var(--color-volt);">✓ Itens no inventário</span>
+                    </div>
+                    <div class="stat-card" style="border-left: 4px solid #3b82f6;">
+                        <span class="stat-card-title">Conversão Média</span>
+                        <div class="stat-card-value" style="color: #3b82f6;">4.2%</div>
+                        <span class="stat-card-footer" style="color: #3b82f6;">✓ Acima da média geral</span>
+                    </div>
+                </div>
+
+                <!-- Pedidos Recentes -->
+                <div>
+                    <h3 style="font-size: 16px; font-weight: 800; text-transform: uppercase; margin-bottom: 16px;">
+                        Vendas Recentes</h3>
+                    <div class="admin-table-container">
+                        <table class="admin-table" id="admin-table-recent-sales">
+                            <thead>
+                                <tr>
+                                    <th>Cód. Pedido</th>
+                                    <th>Data</th>
+                                    <th>Cliente</th>
+                                    <th>Valor Total</th>
+                                    <th>Pagamento</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Injetado via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --- PAINEL 2: GESTÃO DE PRODUTOS (CRUD) --- -->
+            <div class="profile-section-pane" id="pane-admin-products" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <h2 class="section-title text-gradient-gold" style="font-size: 24px;">Catálogo de Mantos</h2>
+                        <p style="color: var(--color-text-sub); font-size: 13px;">Cadastre, edite, controle estoques ou
+                            delete camisas do sistema.</p>
+                    </div>
+                    <button class="btn-primary" id="btn-open-product-modal"
+                        style="background-color: var(--color-gold); color: #000; font-size: 13px;"><i
+                            class="fa-solid fa-plus"></i> Novo Manto Esportivo</button>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table" id="admin-table-products">
+                        <thead>
+                            <tr>
+                                <th>Foto</th>
+                                <th>Manto / SKU</th>
+                                <th>Time / Categoria</th>
+                                <th>Preço Original</th>
+                                <th>Preço Promo</th>
+                                <th>Estoque Total</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Linhas de produtos injetadas via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- --- PAINEL CATEGORIAS (CRUD & ASSOCIAÇÃO) --- -->
+            <div class="profile-section-pane" id="pane-admin-categories" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <h2 class="section-title text-gradient-gold" style="font-size: 24px;">Gestão de Categorias</h2>
+                        <p style="color: var(--color-text-sub); font-size: 13px;">Crie, edite e gerencie as coleções de
+                            mantos da plataforma.</p>
+                    </div>
+                    <button class="btn-primary" id="btn-open-category-modal"
+                        style="background-color: var(--color-gold); color: #000; font-size: 13px;"><i
+                            class="fa-solid fa-plus"></i> Nova Categoria</button>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table" id="admin-table-categories">
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Subcategorias</th>
+                                <th>Qtd. Produtos</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Linhas de categorias injetadas via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- --- PAINEL MARCAS (CRUD) --- -->
+            <div class="profile-section-pane" id="pane-admin-brands" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <h2 class="section-title text-gradient-gold" style="font-size: 24px;">Gestão de Marcas</h2>
+                        <p style="color: var(--color-text-sub); font-size: 13px;">Cadastre, edite ou exclua as marcas
+                            parceiras exibidas na loja.</p>
+                    </div>
+                    <button class="btn-primary" id="btn-open-brand-modal"
+                        style="background-color: var(--color-gold); color: #000; font-size: 13px;"><i
+                            class="fa-solid fa-plus"></i> Nova Marca</button>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table" id="admin-table-brands">
+                        <thead>
+                            <tr>
+                                <th>Logotipo</th>
+                                <th>Marca</th>
+                                <th>Classe do Ícone (FontAwesome)</th>
+                                <th>Qtd. Produtos</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Linhas de marcas injetadas via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- --- PAINEL 3: GESTÃO DE PEDIDOS --- -->
+            <div class="profile-section-pane" id="pane-admin-orders" style="display: none;">
+                <div style="margin-bottom: 24px;">
+                    <h2 class="section-title text-gradient-gold" style="font-size: 24px;">Fluxo de Pedidos</h2>
+                    <p style="color: var(--color-text-sub); font-size: 13px;">Acompanhe faturamento, altere status para
+                        envio ou cancele transações.</p>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table" id="admin-table-orders">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Data</th>
+                                <th>Mantos Comprados</th>
+                                <th>Valor Total</th>
+                                <th>Meio / Destino</th>
+                                <th>Status Atual</th>
+                                <th>Ações de Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Injetado via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- --- PAINEL 4: MARKETING E CAMPANHAS --- -->
+            <div class="profile-section-pane" id="pane-admin-marketing" style="display: none;">
+                <div style="margin-bottom: 30px;">
+                    <h2 class="section-title text-gradient-gold" style="font-size: 24px;">Marketing Visual & Campanhas
+                    </h2>
+                    <p style="color: var(--color-text-sub); font-size: 13px;">Gerencie pop-ups de cupons na home e
+                        banners carrossel.</p>
+                </div>
+
+                <!-- Configuração de Pop-up Promocional -->
+                <div class="summary-card" style="margin-bottom: 40px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+                        <h3 style="font-size: 18px; font-weight: 700;"><i class="fa-solid fa-fire-flame-curved"
+                                style="color: var(--color-volt);"></i> Pop-up Promocional (Home)</h3>
+                        <div class="toggle-container">
+                            <span>Status Ativo</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="mkt-popup-status">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pay-form-group">
+                        <div class="pay-form-row-2">
+                            <div>
+                                <label
+                                    style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Título
+                                    do Pop-up</label>
+                                <input type="text" class="pay-input" id="mkt-popup-title">
+                            </div>
+                            <div>
+                                <label
+                                    style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Código
+                                    do Cupom de Desconto</label>
+                                <input type="text" class="pay-input" id="mkt-popup-coupon"
+                                    style="text-transform: uppercase;">
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Mensagem
+                                Promocional</label>
+                            <input type="text" class="pay-input" id="mkt-popup-message">
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="btn-save-mkt-popup"
+                        style="background-color: var(--color-gold); color: #000; margin-top: 16px; font-size: 13px;">Atualizar
+                        Pop-up de Vendas</button>
+                </div>
+
+                <!-- Configuração de Banners Carrossel -->
+                <div class="summary-card">
+                    <h3
+                        style="font-size: 18px; font-weight: 700; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px;">
+                        <i class="fa-solid fa-images" style="color: #3b82f6;"></i> Banners Carrossel Ativos
+                    </h3>
+                    <div id="mkt-banners-list-wrapper">
+                        <!-- Injetado via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- --- PAINEL 5: CONFIGURAÇÕES GERAIS --- -->
+            <div class="profile-section-pane" id="pane-admin-settings" style="display: none;">
+                <h2 class="section-title text-gradient-gold" style="font-size: 24px; margin-bottom: 20px;">Configurações
+                    Gerais</h2>
+                <div class="pay-form-group">
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Instagram
+                        URL</label>
+                    <input type="text" class="pay-input" id="admin-setting-instagram"
+                        placeholder="https://instagram.com/yourpage">
+                </div>
+                <div class="pay-form-group">
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Facebook
+                        URL</label>
+                    <input type="text" class="pay-input" id="admin-setting-facebook"
+                        placeholder="https://facebook.com/yourpage">
+                </div>
+                <div class="pay-form-group">
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Twitter
+                        URL</label>
+                    <input type="text" class="pay-input" id="admin-setting-twitter"
+                        placeholder="https://twitter.com/yourhandle">
+                </div>
+                <h3 class="section-title text-gradient-gold" style="font-size: 20px; margin-top: 30px;">Configurações de
+                    Frete</h3>
+                <div class="pay-form-row-2" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px;">
+                    <div class="pay-form-group">
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Tarifa
+                            Fixa (R$)</label>
+                        <input type="number" step="0.01" class="pay-input" id="admin-shipping-fixed" placeholder="0.00">
+                    </div>
+                    <div class="pay-form-group">
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Frete
+                            Grátis Acima de (R$)</label>
+                        <input type="number" step="0.01" class="pay-input" id="admin-shipping-free-above"
+                            placeholder="0.00">
+                    </div>
+                </div>
+                <div class="pay-form-group" style="margin-top: 12px;">
+                    <input type="checkbox" id="admin-shipping-by-weight" style="margin-right: 8px;">
+                    <label for="admin-shipping-by-weight" style="font-size: 12px; color: var(--color-text-sub);">Cálculo
+                        por Peso</label>
+                    <input type="number" step="0.01" class="pay-input" id="admin-shipping-price-per-kg"
+                        placeholder="Preço por Kg" style="margin-top: 8px; display: none; width: 120px;">
+                </div>
+                <button class="btn-primary" id="btn-save-admin-settings"
+                    style="margin-top: 24px; background-color: var(--color-gold); color: #000;">Salvar
+                    Configurações</button>
+            </div>
+
+            <!-- --- PAINEL 6: GERENCIAMENTO GERAL DE CUPONS --- -->
+            <div class="profile-section-pane" id="pane-admin-coupons" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <div>
+                        <h2 class="section-title text-gradient-gold" style="font-size: 24px;">Cupons de Desconto</h2>
+                        <p style="color: var(--color-text-sub); font-size: 13px;">Crie, edite, ative e remova cupons
+                            promocionais da loja.</p>
+                    </div>
+                    <button class="btn-primary" id="btn-open-coupon-modal"
+                        style="background-color: var(--color-gold); color: #000; font-size: 13px;"><i
+                            class="fa-solid fa-plus"></i> Novo Cupom</button>
+                </div>
+
+                <div class="admin-table-container">
+                    <table class="admin-table" id="admin-table-coupons">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Injetado via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- --- INTERACTIVE ADMIN MODAL (CADASTRAR/EDITAR MANTO) --- -->
+    <div class="admin-modal-overlay" id="product-modal">
+        <div class="admin-modal-card">
+            <i class="fa-solid fa-xmark popup-close" id="btn-close-product-modal"></i>
+            <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 24px;" class="text-gradient-gold"
+                id="modal-product-title">Cadastrar Novo Manto</h3>
+
+            <!-- Form Grid -->
+            <div class="pay-form-group">
+                <input type="hidden" id="form-prod-id">
+
+                <div class="pay-form-row-2">
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Nome
+                            do Produto</label>
+                        <input type="text" placeholder="Camisa Real Madrid 26/27" class="pay-input" id="form-prod-name"
+                            required>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Código
+                            SKU</label>
+                        <input type="text" placeholder="RMA-2026-HOME" class="pay-input" id="form-prod-sku" required>
+                    </div>
+                </div>
+
+                <div class="pay-form-row-2">
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Título/Slogan</label>
+                        <input type="text" placeholder="Manto de Elite Campeão" class="pay-input" id="form-prod-title">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Time
+                            Relacionado</label>
+                        <input type="text" placeholder="Real Madrid" class="pay-input" id="form-prod-team" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Descrição
+                        Detalhada do Produto</label>
+                    <textarea class="input-textarea" style="min-height: 80px; margin-bottom: 0;"
+                        placeholder="Descreva os materiais, tecnologia de absorção, detalhes da estampa..."
+                        id="form-prod-description"></textarea>
+                </div>
+
+                <div style="margin-top: 12px; margin-bottom: 12px;">
+                    <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;"><i
+                            class="fa-solid fa-cloud-arrow-up"></i> Upload de Fotos & Vídeos (Max 10MB por
+                        arquivo)</label>
+                    <input type="file" id="form-prod-media" accept="image/*,video/*" multiple class="pay-input"
+                        style="padding: 8px;">
+                    <div id="media-preview" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;"></div>
+                </div>
+
+                <div class="pay-form-row-2" style="grid-template-columns: repeat(4, 1fr);">
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Preço
+                            De (Original)</label>
+                        <input type="number" step="0.01" placeholder="349.90" class="pay-input" id="form-prod-price"
+                            required>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Preço
+                            Por (Promo)</label>
+                        <input type="number" step="0.01" placeholder="299.90" class="pay-input"
+                            id="form-prod-promoprice">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Marca</label>
+                        <select class="pay-input" id="form-prod-brand"
+                            style="background-color: var(--bg-element); color: #fff;"></select>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Categoria</label>
+                        <select class="pay-input" id="form-prod-category"
+                            style="background-color: var(--bg-element); color: #fff;">
+                            <option value="Futebol Nacional">Futebol Nacional</option>
+                            <option value="Futebol Europeu">Futebol Europeu</option>
+                            <option value="Seleções">Seleções</option>
+                            <option value="Retrô">Retrô Legends</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pay-form-row-2" style="grid-template-columns: repeat(3, 1fr);">
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Gênero</label>
+                        <select class="pay-input" id="form-prod-gender"
+                            style="background-color: var(--bg-element); color: #fff;">
+                            <option value="Masculino">Masculino</option>
+                            <option value="Feminino">Feminino</option>
+                            <option value="Unissex">Unissex</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Modelo</label>
+                        <select class="pay-input" id="form-prod-type"
+                            style="background-color: var(--bg-element); color: #fff;">
+                            <option value="Torcedor">Torcedor</option>
+                            <option value="Jogador">Jogador (Elite)</option>
+                            <option value="Retrô">Retrô</option>
+                            <option value="Treino">Treino</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Coleção
+                            Especial</label>
+                        <input type="text" placeholder="Temporada 2026" class="pay-input" id="form-prod-collection">
+                    </div>
+                </div>
+
+                <!-- SUB-FORMULÁRIO DE ESTOQUE POR TAMANHOS -->
+                <div style="border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 16px; margin-top: 6px;">
+                    <h4
+                        style="font-size: 13px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; color: var(--color-gold);">
+                        <i class="fa-solid fa-boxes-stacked"></i> Estoque Individual por Tamanho
+                    </h4>
+                    <div class="pay-form-row-2" style="grid-template-columns: repeat(5, 1fr);">
+                        <div>
+                            <label
+                                style="font-size: 11px; color: var(--color-text-sub); display: block; margin-bottom: 4px; text-align: center;">Tamanho
+                                P</label>
+                            <input type="number" placeholder="10" class="pay-input" style="text-align: center;"
+                                id="form-size-p" required>
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 11px; color: var(--color-text-sub); display: block; margin-bottom: 4px; text-align: center;">Tamanho
+                                M</label>
+                            <input type="number" placeholder="15" class="pay-input" style="text-align: center;"
+                                id="form-size-m" required>
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 11px; color: var(--color-text-sub); display: block; margin-bottom: 4px; text-align: center;">Tamanho
+                                G</label>
+                            <input type="number" placeholder="15" class="pay-input" style="text-align: center;"
+                                id="form-size-g" required>
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 11px; color: var(--color-text-sub); display: block; margin-bottom: 4px; text-align: center;">Tamanho
+                                GG</label>
+                            <input type="number" placeholder="10" class="pay-input" style="text-align: center;"
+                                id="form-size-gg" required>
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 11px; color: var(--color-text-sub); display: block; margin-bottom: 4px; text-align: center;">Tamanho
+                                XG</label>
+                            <input type="number" placeholder="5" class="pay-input" style="text-align: center;"
+                                id="form-size-xg" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dynamic-sizes-section"
+                    style="margin-top: 14px; border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 14px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <h4
+                            style="font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--color-gold);">
+                            <i class="fa-solid fa-circle-plus"></i> Tamanhos Adicionais/Personalizados
+                        </h4>
+                        <button type="button" class="btn-primary" id="btn-add-custom-size-row"
+                            style="padding: 6px 12px; font-size: 11px; background-color: var(--bg-element-light); color: #fff; width: auto; margin: 0;">+
+                            Adicionar Tamanho</button>
+                    </div>
+                    <div id="custom-sizes-list"
+                        style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                        <!-- Injetado via JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="btn-primary" id="btn-save-product"
+                style="width: 100%; margin-top: 24px; background-color: var(--color-gold); color: #000;">Salvar Manto no
+                Catálogo</button>
+        </div>
+    </div>
+
+    <!-- --- INTERACTIVE COUPON MODAL --- -->
+    <div class="admin-modal-overlay" id="coupon-modal">
+        <div class="admin-modal-card" style="max-width: 500px;">
+            <i class="fa-solid fa-xmark popup-close" id="btn-close-coupon-modal"></i>
+            <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 24px;" class="text-gradient-gold"
+                id="modal-coupon-title">Criar Novo Cupom</h3>
+
+            <div class="pay-form-group">
+                <input type="hidden" id="form-coupon-id">
+
+                <div style="margin-bottom: 12px;">
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Código
+                        do Cupom</label>
+                    <input type="text" placeholder="FUT20" class="pay-input" id="form-coupon-code"
+                        style="text-transform: uppercase;" required>
+                </div>
+
+                <div class="pay-form-row-2" style="grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Tipo
+                            de Desconto</label>
+                        <select class="pay-input" id="form-coupon-type"
+                            style="background-color: var(--bg-element); color: #fff;">
+                            <option value="percent">Porcentagem (%)</option>
+                            <option value="fixed">Valor Fixo (R$)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Valor
+                            do Desconto</label>
+                        <input type="number" step="0.01" placeholder="10.00" class="pay-input" id="form-coupon-value"
+                            required>
+                    </div>
+                </div>
+
+                <div style="margin-top: 12px; display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="form-coupon-status" checked
+                        style="width: 16px; height: 16px; cursor: pointer; margin: 0;">
+                    <label for="form-coupon-status"
+                        style="font-size: 13px; color: var(--color-text-sub); cursor: pointer; margin: 0;">Cupom Ativo
+                        (Disponível para uso)</label>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-save-coupon"
+                style="width: 100%; margin-top: 24px; background-color: var(--color-gold); color: #000;">Salvar
+                Cupom</button>
+        </div>
+    </div>
+
+    <!-- --- INTERACTIVE CATEGORY MODAL --- -->
+    <div class="admin-modal-overlay" id="category-modal">
+        <div class="admin-modal-card" style="max-width: 600px;">
+            <i class="fa-solid fa-xmark popup-close" id="btn-close-category-modal"></i>
+            <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 24px;" class="text-gradient-gold"
+                id="modal-category-title">Criar Nova Categoria</h3>
+
+            <div class="pay-form-group">
+                <input type="hidden" id="form-category-old-name">
+
+                <div style="margin-bottom: 12px;">
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Nome
+                        da Categoria</label>
+                    <input type="text" placeholder="Ex: Futebol Nacional" class="pay-input" id="form-category-name"
+                        required>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Subcategorias
+                        (separadas por vírgula)</label>
+                    <input type="text" placeholder="Ex: Flamengo, Corinthians, Palmeiras" class="pay-input"
+                        id="form-category-subcategories">
+                </div>
+
+                <div>
+                    <label
+                        style="font-size: 13px; color: var(--color-gold); font-weight: 700; display: block; margin-bottom: 8px;"><i
+                            class="fa-solid fa-shirt"></i> Associar Mantos a esta Categoria</label>
+                    <div id="category-product-association-list"
+                        style="max-height: 220px; overflow-y: auto; background-color: var(--bg-element); border: var(--glass-border); border-radius: var(--border-radius-md); padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Checkboxes dos produtos injetadas via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-save-category"
+                style="width: 100%; margin-top: 24px; background-color: var(--color-gold); color: #000;">Salvar
+                Categoria</button>
+        </div>
+    </div>
+
+    <!-- --- INTERACTIVE BRAND MODAL --- -->
+    <div class="admin-modal-overlay" id="brand-modal">
+        <div class="admin-modal-card" style="max-width: 500px;">
+            <i class="fa-solid fa-xmark popup-close" id="btn-close-brand-modal"></i>
+            <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 24px;" class="text-gradient-gold"
+                id="modal-brand-title">Criar Nova Marca</h3>
+
+            <div class="pay-form-group">
+                <input type="hidden" id="form-brand-old-name">
+
+                <div style="margin-bottom: 12px;">
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Nome
+                        da Marca</label>
+                    <input type="text" placeholder="Ex: Nike" class="pay-input" id="form-brand-name" required>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Classe
+                        do Ícone (opcional, ex: fa-solid fa-bolt)</label>
+                    <input type="text" placeholder="Ex: fa-solid fa-bolt" class="pay-input" id="form-brand-icon">
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label
+                        style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Logotipo
+                        da Marca (Upload de Imagem/SVG)</label>
+                    <label for="form-brand-logo-upload" class="btn-secondary"
+                        style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; width: auto; font-size: 13px; padding: 10px 16px;">
+                        <i class="fa-solid fa-upload"></i> Escolher Logotipo
+                    </label>
+                    <input type="file" id="form-brand-logo-upload" accept="image/*" style="display: none;">
+                    <div id="brand-logo-preview"
+                        style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+                        <!-- Preview do logotipo em Base64 -->
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-save-brand"
+                style="width: 100%; margin-top: 24px; background-color: var(--color-gold); color: #000;">Salvar
+                Marca</button>
+        </div>
+    </div>
+
+    <!-- --- FOOTER COMPACTO --- -->
+    <footer style="margin-top: 80px; padding: 30px 0;">
+        <div class="container footer-bottom" style="border: none; padding: 0;">
+            FutCommerce E-commerce Admin. Dashboard de Gestão Centralizado © 2026.
+        </div>
+    </footer>
+
+    <!-- --- JS SCRIPTS --- -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

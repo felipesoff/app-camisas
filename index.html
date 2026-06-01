@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FutCommerce - A maior e mais moderna loja virtual de camisas de times de futebol nacionais, europeus, seleções e retrôs lendários do mercado.">
+    <title>FutCommerce | Mantos Sagrados de Futebol de Elite</title>
+    <!-- Icons (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- --- GLASS HEADER --- -->
+    <header class="glass" id="main-header">
+        <div class="container navbar">
+            <a href="index.html" class="logo" id="header-logo">
+                <i class="fa-solid fa-circle-nodes"></i>FUT<span>COMMERCE</span>
+            </a>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item active"><a href="index.html" id="nav-link-home">Home</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Futebol Nacional" id="nav-link-nacional">Nacional</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Futebol Europeu" id="nav-link-europeu">Europeu</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Seleções" id="nav-link-selecoes">Seleções</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Retrô" id="nav-link-retro">Retrô Legends</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <!-- Busca Inteligente -->
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" placeholder="Buscar time, camisa ou marca..." class="search-input" id="search-input">
+                    <div class="search-results" id="search-results"></div>
+                </div>
+
+                <!-- Favoritos Link -->
+                <a href="profile.html?tab=favs" class="profile-icon" id="header-favs" title="Meus Favoritos">
+                    <i class="fa-regular fa-heart"></i>
+                </a>
+
+                <!-- Carrinho Link/Badge -->
+                <a href="cart.html" class="cart-icon" id="header-cart" title="Meu Carrinho">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-count">0</span>
+                </a>
+
+                <!-- Perfil/Conta -->
+                <a href="profile.html" class="profile-icon" id="header-profile" title="Minha Conta">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- HERO SECTION WITH BANNER CAROUSEL --- -->
+    <section class="container hero-section">
+        <div class="banner-carousel" id="hero-carousel">
+            <!-- Os slides serão injetados dinamicamente via JS -->
+            <div class="banner-nav" id="carousel-dots"></div>
+        </div>
+    </section>
+
+    <!-- --- QUICK CATEGORIES PILLS --- -->
+    <section class="container">
+        <div class="quick-categories" id="quick-categories-pills">
+            <button class="category-btn active" data-category="all" id="pill-all">⚡ Todos os Mantos</button>
+            <!-- Mais categorias serão injetadas dinamicamente -->
+        </div>
+    </section>
+
+    <!-- --- NOVIDADES EM DESTAQUE --- -->
+    <section class="container products-section">
+        <div class="section-header">
+            <h2 class="section-title text-gradient-volt" id="catalog-title">Coleção Geral</h2>
+            <div class="toggle-container" style="font-size: 14px; font-weight: 600;">
+                <span>Filtrar Apenas Promoções</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="filter-promo-only">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- --- FILTRO POR MARCAS ESPORTIVAS --- -->
+        <div class="brand-filter-bar" id="brand-filter-bar">
+            <button class="brand-btn active" data-brand="all" id="brand-btn-all"><i class="fa-solid fa-tags"></i> Todas</button>
+            <button class="brand-btn" data-brand="Nike"><i class="fa-solid fa-bolt"></i> Nike</button>
+            <button class="brand-btn" data-brand="Adidas"><i class="fa-solid fa-circle-nodes"></i> Adidas</button>
+            <button class="brand-btn" data-brand="Puma"><i class="fa-solid fa-cat"></i> Puma</button>
+            <button class="brand-btn" data-brand="Retrô"><i class="fa-solid fa-clock-rotate-left"></i> Retrô</button>
+        </div>
+
+        <div class="product-grid" id="products-catalog-grid">
+            <!-- Cards de Camisas injetados dinamicamente -->
+        </div>
+    </section>
+
+    <!-- --- POP-UP PROMOCIONAL INTELIGENTE --- -->
+    <div class="popup-overlay" id="promo-popup">
+        <div class="popup-card">
+            <i class="fa-solid fa-xmark popup-close" id="popup-close-btn"></i>
+            <div class="popup-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+            <h3 id="popup-title">Carregando...</h3>
+            <p id="popup-message">Aguarde um instante...</p>
+            <div class="popup-input-group" id="popup-form-area">
+                <input type="email" placeholder="Digite seu melhor e-mail..." class="popup-input" id="popup-email">
+                <button class="btn-primary" id="popup-submit-btn">Liberar Meu Desconto</button>
+            </div>
+            <!-- Div para exibir o cupom após a captação -->
+            <div class="coupon-box" id="popup-coupon-reveal" style="display: none;" title="Clique para copiar o cupom!">
+                <span id="popup-coupon-code">FUT10</span>
+                <div style="font-size: 10px; font-weight: 500; margin-top: 4px; color: #ffffff; letter-spacing: 0.5px;">Clique acima para copiar</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- FOOTER --- -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-column">
+                <h4 class="logo"><i class="fa-solid fa-circle-nodes"></i>FUT<span>COMMERCE</span></h4>
+                <p style="color: var(--color-text-sub); font-size: 14px; margin-top: 10px; max-width: 320px;">
+                    A maior e mais inovadora plataforma esportiva para apaixonados por mantos sagrados. Sinta a emoção do gramado na sua pele.
+                </p>
+                <div style="display: flex; gap: 14px; margin-top: 20px; font-size: 18px;">
+                    <a href="#" style="color: var(--color-volt);"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Categorias</h4>
+                <ul>
+                    <li><a href="index.html?cat=Futebol Nacional">Nacionais</a></li>
+                    <li><a href="index.html?cat=Futebol Europeu">Europeus</a></li>
+                    <li><a href="index.html?cat=Seleções">Seleções</a></li>
+                    <li><a href="index.html?cat=Retrô">Retrô Vintage</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Ajuda & Suporte</h4>
+                <ul>
+                    <li><a href="#">Trocas e Devoluções</a></li>
+                    <li><a href="#">Rastrear Pedido</a></li>
+                    <li><a href="#">Guia de Tamanhos</a></li>
+                    <li><a href="#">Fale Conosco</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Métodos de Pagamento</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; color: var(--color-text-sub); font-size: 24px; margin-top: 10px;">
+                    <i class="fa-brands fa-pix" style="color: #32bcad;" title="PIX"></i>
+                    <i class="fa-brands fa-cc-visa" title="Visa"></i>
+                    <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+                    <i class="fa-brands fa-cc-apple-pay" title="Apple Pay"></i>
+                    <i class="fa-solid fa-barcode" title="Boleto Bancário"></i>
+                </div>
+                <p style="font-size: 12px; color: var(--color-text-sub); margin-top: 20px;">
+                    FutCommerce E-commerce LTDA. CNPJ: 00.000.000/0001-00. Copyright © 2026. Todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            Desenvolvido com <i class="fa-solid fa-heart" style="color: var(--color-danger);"></i> por Antigravity IDE - Pair Programming Partner
+        </div>
+    </footer>
+
+    <!-- --- CONTÊINER DE SOCIAL PROOF (TOAST NOTIFICATIONS) --- -->
+    <div class="toast-social-proof" id="toast-social-proof">
+        <i class="fa-solid fa-xmark toast-close-btn" id="toast-close-btn"></i>
+        <div class="toast-img-wrapper" id="toast-product-img">
+            <!-- Imagem ou SVG da camisa injetada via JS -->
+        </div>
+        <div class="toast-body">
+            <div class="toast-title" id="toast-buyer-info">Artur de Rio de Janeiro/RJ</div>
+            <div class="toast-desc" id="toast-purchase-desc">acabou de comprar a Camisa Flamengo Home (Tam: G)</div>
+        </div>
+        <div class="toast-progress" id="toast-progress-bar"></div>
+    <!-- Bottom Navigation Bar for Mobile -->
+    <div class="mobile-nav-bar" id="mobile-nav-bar">
+        <a href="index.html" class="mobile-nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="index.html#catalog-title" class="mobile-nav-item">
+            <i class="fa-solid fa-shirt"></i>
+            <span>Mantos</span>
+        </a>
+        <a href="cart.html" class="mobile-nav-item">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-badge-mobile" id="cart-badge-mobile">0</span>
+            <span>Carrinho</span>
+        </a>
+        <a href="profile.html?tab=favs" class="mobile-nav-item">
+            <i class="fa-solid fa-heart"></i>
+            <span>Favoritos</span>
+        </a>
+        <a href="profile.html" class="mobile-nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+    <!-- --- JS SCRIPTS --- -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

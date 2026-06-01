@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Confira os detalhes completos deste manto sagrado. Escolha o seu tamanho ideal e sinta o peso da camisa.">
+    <title>FutCommerce | Detalhes do Produto</title>
+    <!-- Icons (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- --- GLASS HEADER --- -->
+    <header class="glass scrolled" id="main-header" style="background-color: var(--bg-card); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); padding: 8px 0;">
+        <div class="container navbar">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-circle-nodes"></i>FUT<span>COMMERCE</span>
+            </a>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="index.html">Home</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Futebol Nacional">Nacional</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Futebol Europeu">Europeu</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Seleções">Seleções</a></li>
+                    <li class="nav-item"><a href="index.html?cat=Retrô">Retrô Legends</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" placeholder="Buscar time, camisa..." class="search-input" id="search-input">
+                    <div class="search-results" id="search-results"></div>
+                </div>
+
+                <a href="profile.html?tab=favs" class="profile-icon" title="Meus Favoritos">
+                    <i class="fa-regular fa-heart"></i>
+                </a>
+
+                <a href="cart.html" class="cart-icon" title="Meu Carrinho">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-badge-count">0</span>
+                </a>
+
+                <a href="profile.html" class="profile-icon" title="Minha Conta">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- PRODUCT DETAIL AREA --- -->
+    <main class="container">
+        <div class="product-detail-layout" id="product-detail-layout">
+            <!-- Galeria de Imagens (Esquerda) -->
+            <div class="product-gallery">
+                <div class="gallery-main" id="gallery-main-view">
+                    <!-- Injetado dinamicamente -->
+                </div>
+                <div class="gallery-thumbs" id="gallery-thumbs-list">
+                    <!-- Injetado dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Painel de Informações (Direita) -->
+            <div class="product-info-panel">
+                <span class="p-tag" id="p-brand-team">Marca | Time</span>
+                <h1 class="p-title" id="p-name">Carregando nome do manto...</h1>
+                <p class="p-subtitle" id="p-title-short">Carregando subtítulo...</p>
+
+                <!-- Avaliação Média -->
+                <div class="p-rating-box" id="p-rating-box">
+                    <!-- Injetado via JS -->
+                </div>
+
+                <hr style="border: none; border-top: var(--glass-border); margin: 20px 0;">
+
+                <!-- Descrição -->
+                <p id="p-description" style="color: var(--color-text-sub); font-size: 14px; margin-bottom: 24px;">
+                    Carregando descrição completa...
+                </p>
+
+                <!-- Seletor de Preço -->
+                <div class="p-price-card">
+                    <div class="p-price-box" id="p-price-box">
+                        <!-- Injetado via JS -->
+                    </div>
+                    <span class="badge badge-new" style="background-color: rgba(0, 230, 118, 0.15); color: var(--color-success); border: 1px solid var(--color-success);">Estoque Disponível</span>
+                </div>
+
+                <!-- Seletor de Tamanhos -->
+                <div class="p-sizes-section">
+                    <div class="sizes-header">
+                        <label>Selecione o Tamanho:</label>
+                        <span class="stock-info" id="p-stock-indicator">Escolha um tamanho para ver o estoque</span>
+                    </div>
+                    <div class="sizes-grid" id="p-sizes-grid">
+                        <!-- Botões P, M, G, GG, XG injetados via JS -->
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="action-buttons-group">
+                    <button class="btn-primary" id="btn-add-to-cart">
+                        <i class="fa-solid fa-cart-arrow-down"></i> Adicionar Ao Manto-Carrinho
+                    </button>
+                    <button class="btn-secondary" id="btn-toggle-favorite" style="width: 54px; padding: 0;">
+                        <i class="fa-regular fa-heart" style="font-size: 18px;"></i>
+                    </button>
+                </div>
+
+                <!-- Especificações / Metadados -->
+                <div class="p-meta-grid">
+                    <div class="meta-item">Gênero: <strong id="p-meta-gender">Carregando...</strong></div>
+                    <div class="meta-item">Modelo: <strong id="p-meta-type">Carregando...</strong></div>
+                    <div class="meta-item">SKU/Código: <strong id="p-meta-sku">Carregando...</strong></div>
+                    <div class="meta-item">Coleção: <strong id="p-meta-collection">Carregando...</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- --- SEÇÃO DE AVALIAÇÕES --- -->
+        <section class="reviews-section">
+            <h2 class="section-title text-gradient-volt" style="margin-bottom: 30px;">Opinião dos Torcedores</h2>
+            
+            <div class="reviews-grid">
+                <!-- Sumário de Notas -->
+                <div class="reviews-summary">
+                    <span class="rating-big" id="summary-avg-rating">0.0</span>
+                    <div id="summary-avg-stars" style="color: var(--color-gold); font-size: 20px; margin: 10px 0;"></div>
+                    <span style="color: var(--color-text-sub); font-size: 14px;" id="summary-reviews-count">Baseado em 0 avaliações</span>
+                    <div style="background-color: var(--bg-element); padding: 12px 20px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; width: 100%; margin-top: 24px; color: var(--color-volt);">
+                        ✓ 98% dos compradores recomendam este manto!
+                    </div>
+                </div>
+
+                <!-- Lista de Avaliações e Formulário -->
+                <div>
+                    <div class="reviews-list" id="reviews-list-container">
+                        <!-- Comentários injetados via JS -->
+                    </div>
+
+                    <!-- Deixar Avaliação -->
+                    <div class="review-form-card">
+                        <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">O que achou deste Manto? Deixe sua opinião!</h3>
+                        <p style="font-size: 13px; color: var(--color-text-sub);">Sua avaliação ajuda outros torcedores a escolherem suas camisas.</p>
+                        
+                        <div class="rating-selector" id="form-rating-stars">
+                            <i class="fa-solid fa-star star-select-btn" data-value="1"></i>
+                            <i class="fa-solid fa-star star-select-btn" data-value="2"></i>
+                            <i class="fa-solid fa-star star-select-btn" data-value="3"></i>
+                            <i class="fa-solid fa-star star-select-btn" data-value="4"></i>
+                            <i class="fa-solid fa-star star-select-btn" data-value="5"></i>
+                        </div>
+
+                        <div class="pay-form-group">
+                            <input type="text" placeholder="Seu nome completo..." class="pay-input" id="form-author-name">
+                        </div>
+                        <textarea placeholder="Escreva o que achou do tecido, tamanho e acabamento..." class="input-textarea" id="form-review-text"></textarea>
+                        
+                        <!-- Upload de Fotos -->
+                        <div style="margin-bottom: 20px;">
+                            <label style="font-size: 12px; color: var(--color-text-sub); display: block; margin-bottom: 6px;">Adicionar Fotos do Produto (Opcional)</label>
+                            <label for="form-review-photos" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; width: auto; font-size: 13px; padding: 10px 16px;">
+                                <i class="fa-solid fa-camera"></i> Escolher Imagens
+                            </label>
+                            <input type="file" id="form-review-photos" multiple accept="image/*" style="display: none;">
+                            <div id="review-photos-preview" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;"></div>
+                        </div>
+                        
+                        <button class="btn-primary" id="btn-submit-review">Enviar Avaliação <i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- --- FOOTER --- -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-column">
+                <h4 class="logo"><i class="fa-solid fa-circle-nodes"></i>FUT<span>COMMERCE</span></h4>
+                <p style="color: var(--color-text-sub); font-size: 14px; margin-top: 10px; max-width: 320px;">
+                    A maior e mais inovadora plataforma esportiva para apaixonados por mantos sagrados. Sinta a emoção do gramado na sua pele.
+                </p>
+                <div style="display: flex; gap: 14px; margin-top: 20px; font-size: 18px;">
+                    <a href="#" style="color: var(--color-volt);"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Categorias</h4>
+                <ul>
+                    <li><a href="index.html?cat=Futebol Nacional">Nacionais</a></li>
+                    <li><a href="index.html?cat=Futebol Europeu">Europeus</a></li>
+                    <li><a href="index.html?cat=Seleções">Seleções</a></li>
+                    <li><a href="index.html?cat=Retrô">Retrô Vintage</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Ajuda & Suporte</h4>
+                <ul>
+                    <li><a href="#">Trocas e Devoluções</a></li>
+                    <li><a href="#">Rastrear Pedido</a></li>
+                    <li><a href="#">Guia de Tamanhos</a></li>
+                    <li><a href="#">Fale Conosco</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Métodos de Pagamento</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; color: var(--color-text-sub); font-size: 24px; margin-top: 10px;">
+                    <i class="fa-brands fa-pix" style="color: #32bcad;" title="PIX"></i>
+                    <i class="fa-brands fa-cc-visa" title="Visa"></i>
+                    <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+                    <i class="fa-brands fa-cc-apple-pay" title="Apple Pay"></i>
+                    <i class="fa-solid fa-barcode" title="Boleto Bancário"></i>
+                </div>
+                <p style="font-size: 12px; color: var(--color-text-sub); margin-top: 20px;">
+                    FutCommerce E-commerce LTDA. CNPJ: 00.000.000/0001-00. Copyright © 2026. Todos os direitos reservados.
+                </p>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            Desenvolvido com <i class="fa-solid fa-heart" style="color: var(--color-danger);"></i> por Antigravity IDE - Pair Programming Partner
+        </div>
+    </footer>
+
+    <!-- --- CONTÊINER DE SOCIAL PROOF (TOAST NOTIFICATIONS) --- -->
+    <div class="toast-social-proof" id="toast-social-proof">
+        <i class="fa-solid fa-xmark toast-close-btn" id="toast-close-btn"></i>
+        <div class="toast-img-wrapper" id="toast-product-img">
+            <!-- Imagem ou SVG da camisa injetada via JS -->
+        </div>
+        <div class="toast-body">
+            <div class="toast-title" id="toast-buyer-info">Artur de Rio de Janeiro/RJ</div>
+            <div class="toast-desc" id="toast-purchase-desc">acabou de comprar a Camisa Flamengo Home (Tam: G)</div>
+        </div>
+        <div class="toast-progress" id="toast-progress-bar"></div>
+    </div>
+
+    <!-- Bottom Navigation Bar for Mobile -->
+    <div class="mobile-nav-bar" id="mobile-nav-bar">
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="index.html#catalog-title" class="mobile-nav-item">
+            <i class="fa-solid fa-shirt"></i>
+            <span>Mantos</span>
+        </a>
+        <a href="cart.html" class="mobile-nav-item">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-badge-mobile" id="cart-badge-mobile">0</span>
+            <span>Carrinho</span>
+        </a>
+        <a href="profile.html?tab=favs" class="mobile-nav-item">
+            <i class="fa-solid fa-heart"></i>
+            <span>Favoritos</span>
+        </a>
+        <a href="profile.html" class="mobile-nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+    <!-- Modal de Zoom de Fotos de Avaliação -->
+    <div class="admin-modal-overlay" id="photo-zoom-modal" style="z-index: 2000;">
+        <div class="admin-modal-card" style="max-width: 700px; padding: 20px; text-align: center; position: relative;">
+            <i class="fa-solid fa-xmark popup-close" id="btn-close-zoom-modal"></i>
+            <img id="zoom-modal-img" src="" alt="Foto Ampliada" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: var(--border-radius-md); margin-top: 10px;">
+        </div>
+    </div>
+
+    <!-- --- JS SCRIPTS --- -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/product.js"></script>
+</body>
+</html>
