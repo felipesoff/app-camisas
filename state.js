@@ -832,30 +832,35 @@ async function seedDatabaseIfEmpty() {
     try {
         // 1. Categorias
         const { data: cats, error: errCats } = await supabase.from('fc_categories').select('name');
-        if (!errCats && (!cats || cats.length === 0)) {
+        if (errCats) throw new Error("Erro ao buscar categorias: " + errCats.message);
+        if (!cats || cats.length === 0) {
             console.log("Supabase: Semeando categorias...");
             const catsToInsert = DEFAULT_CATEGORIES.map(c => ({
                 name: c.name,
                 subcategories: c.subcategories || []
             }));
-            await supabase.from('fc_categories').insert(catsToInsert);
+            const { error: insErr } = await supabase.from('fc_categories').insert(catsToInsert);
+            if (insErr) throw new Error("Erro ao semear categorias: " + insErr.message);
         }
 
         // 2. Marcas
         const { data: brands, error: errBrands } = await supabase.from('fc_brands').select('name');
-        if (!errBrands && (!brands || brands.length === 0)) {
+        if (errBrands) throw new Error("Erro ao buscar marcas: " + errBrands.message);
+        if (!brands || brands.length === 0) {
             console.log("Supabase: Semeando marcas...");
             const brandsToInsert = DEFAULT_BRANDS.map(b => ({
                 name: b.name,
                 icon: b.icon || null,
                 logo: null
             }));
-            await supabase.from('fc_brands').insert(brandsToInsert);
+            const { error: insErr } = await supabase.from('fc_brands').insert(brandsToInsert);
+            if (insErr) throw new Error("Erro ao semear marcas: " + insErr.message);
         }
 
         // 3. Produtos
         const { data: prods, error: errProds } = await supabase.from('fc_products').select('id');
-        if (!errProds && (!prods || prods.length === 0)) {
+        if (errProds) throw new Error("Erro ao buscar produtos: " + errProds.message);
+        if (!prods || prods.length === 0) {
             console.log("Supabase: Semeando produtos...");
             const prodsToInsert = DEFAULT_PRODUCTS.map(p => ({
                 id: p.id,
@@ -874,12 +879,14 @@ async function seedDatabaseIfEmpty() {
                 sizes: p.sizes || [],
                 ratings: p.reviews || []
             }));
-            await supabase.from('fc_products').insert(prodsToInsert);
+            const { error: insErr } = await supabase.from('fc_products').insert(prodsToInsert);
+            if (insErr) throw new Error("Erro ao semear produtos: " + insErr.message);
         }
 
         // 4. Banners & Popups
         const { data: banners, error: errBanners } = await supabase.from('fc_banners').select('id');
-        if (!errBanners && (!banners || banners.length === 0)) {
+        if (errBanners) throw new Error("Erro ao buscar banners: " + errBanners.message);
+        if (!banners || banners.length === 0) {
             console.log("Supabase: Semeando banners...");
             const bannersToInsert = DEFAULT_BANNERS.map((b, idx) => ({
                 id: idx + 1,
@@ -891,11 +898,13 @@ async function seedDatabaseIfEmpty() {
                 link: b.link || null,
                 active: b.active !== false
             }));
-            await supabase.from('fc_banners').insert(bannersToInsert);
+            const { error: insErr } = await supabase.from('fc_banners').insert(bannersToInsert);
+            if (insErr) throw new Error("Erro ao semear banners: " + insErr.message);
         }
 
         const { data: popups, error: errPopups } = await supabase.from('fc_popups').select('id');
-        if (!errPopups && (!popups || popups.length === 0)) {
+        if (errPopups) throw new Error("Erro ao buscar popups: " + errPopups.message);
+        if (!popups || popups.length === 0) {
             console.log("Supabase: Semeando popup...");
             const popupToInsert = {
                 id: 1,
@@ -907,11 +916,13 @@ async function seedDatabaseIfEmpty() {
                 btn_text: DEFAULT_POPUPS.btnText,
                 placeholder: DEFAULT_POPUPS.placeholder
             };
-            await supabase.from('fc_popups').insert(popupToInsert);
+            const { error: insErr } = await supabase.from('fc_popups').insert(popupToInsert);
+            if (insErr) throw new Error("Erro ao semear popup: " + insErr.message);
         }
         console.log("Supabase: Verificação de seed concluída com sucesso!");
     } catch (e) {
         console.error("Erro inesperado ao semear dados:", e);
+        alert("Erro de Banco (Supabase): " + e.message);
     }
 }
 
