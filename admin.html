@@ -6,6 +6,9 @@
         window.addEventListener('error', function(event) {
             alert("Erro global capturado:\nMensagem: " + event.message + "\nArquivo: " + event.filename + "\nLinha: " + event.lineno + ":" + event.colno);
         });
+        window.addEventListener('unhandledrejection', function(event) {
+            alert("Erro assíncrono capturado:\nMotivo: " + (event.reason ? (event.reason.message || event.reason) : event));
+        });
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
