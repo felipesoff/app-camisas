@@ -1127,7 +1127,10 @@ const FutDB = {
                 ratings: product.reviews || []
             };
             const { error } = await supabase.from('fc_products').insert(prodToInsert);
-            if (error) console.error("Erro addProduct:", error);
+            if (error) {
+                console.error("Erro addProduct:", error);
+                throw new Error("Erro no Supabase ao adicionar produto: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_products_updated"));
             return product;
         }
@@ -1159,7 +1162,10 @@ const FutDB = {
                 ratings: updatedProd.reviews || (existing ? existing.ratings : [])
             };
             const { error } = await supabase.from('fc_products').upsert(prodToUpsert);
-            if (error) { console.error("Erro updateProduct:", error); return false; }
+            if (error) {
+                console.error("Erro updateProduct:", error);
+                throw new Error("Erro no Supabase ao atualizar produto: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_products_updated"));
             return true;
         }
@@ -1180,7 +1186,10 @@ const FutDB = {
     deleteProduct: async function(id) {
         if (useSupabase) {
             const { error } = await supabase.from('fc_products').delete().eq('id', id);
-            if (error) console.error("Erro deleteProduct:", error);
+            if (error) {
+                console.error("Erro deleteProduct:", error);
+                throw new Error("Erro no Supabase ao deletar produto: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_products_updated"));
             return;
         }
