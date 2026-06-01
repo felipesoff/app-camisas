@@ -1631,7 +1631,10 @@ const FutDB = {
     addCategory: async function(category) {
         if (useSupabase) {
             const { error } = await supabase.from('fc_categories').insert(category);
-            if (error) { console.error("Erro addCategory:", error); return false; }
+            if (error) {
+                console.error("Erro addCategory:", error);
+                throw new Error("Erro no Supabase ao adicionar categoria: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_categories_updated"));
             return true;
         }
@@ -1646,7 +1649,10 @@ const FutDB = {
     updateCategory: async function(oldName, updatedCategory) {
         if (useSupabase) {
             const { error } = await supabase.from('fc_categories').update(updatedCategory).eq('name', oldName);
-            if (error) { console.error("Erro updateCategory:", error); return false; }
+            if (error) {
+                console.error("Erro updateCategory:", error);
+                throw new Error("Erro no Supabase ao atualizar categoria: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_categories_updated"));
             return true;
         }
@@ -1745,7 +1751,10 @@ const FutDB = {
     addBrand: async function(brand) {
         if (useSupabase) {
             const { error } = await supabase.from('fc_brands').insert(brand);
-            if (error) { console.error("Erro addBrand:", error); return false; }
+            if (error) {
+                console.error("Erro addBrand:", error);
+                throw new Error("Erro no Supabase ao adicionar marca: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_brands_updated"));
             return true;
         }
@@ -1760,7 +1769,10 @@ const FutDB = {
     updateBrand: async function(oldName, updatedBrand) {
         if (useSupabase) {
             const { error } = await supabase.from('fc_brands').update(updatedBrand).eq('name', oldName);
-            if (error) { console.error("Erro updateBrand:", error); return false; }
+            if (error) {
+                console.error("Erro updateBrand:", error);
+                throw new Error("Erro no Supabase ao atualizar marca: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_brands_updated"));
             return true;
         }
