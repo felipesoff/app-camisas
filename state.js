@@ -877,7 +877,11 @@ async function seedDatabaseIfEmpty() {
                 image: p.image || (p.images && p.images[0]) || null,
                 images: p.images || [],
                 sizes: p.sizes || [],
-                ratings: p.reviews || []
+                ratings: p.reviews || [],
+                sku: p.sku || "",
+                team: p.team || "",
+                rating: p.rating || 5.0,
+                reviewsCount: p.reviewsCount || 0
             }));
             const { error: insErr } = await supabase.from('fc_products').insert(prodsToInsert);
             if (insErr) throw new Error("Erro ao semear produtos: " + insErr.message);
@@ -1077,7 +1081,12 @@ const FutDB = {
             if (error) { console.error("Erro getProducts:", error); return []; }
             return (data || []).map(p => ({
                 ...p,
-                promoPrice: p.promoprice,
+                sku: p.sku || "",
+                team: p.team || "",
+                price: p.price !== undefined && p.price !== null ? Number(p.price) : 0.0,
+                promoPrice: p.promoprice !== undefined && p.promoprice !== null ? Number(p.promoprice) : null,
+                rating: p.rating !== undefined && p.rating !== null ? Number(p.rating) : 5.0,
+                reviewsCount: p.reviewsCount !== undefined && p.reviewsCount !== null ? Number(p.reviewsCount) : (p.ratings ? p.ratings.length : 0),
                 reviews: p.ratings || []
             }));
         }
@@ -1100,7 +1109,11 @@ const FutDB = {
                 image: p.image || (p.images && p.images[0]) || null,
                 images: p.images || [],
                 sizes: p.sizes || [],
-                ratings: p.reviews || []
+                ratings: p.reviews || [],
+                sku: p.sku || "",
+                team: p.team || "",
+                rating: p.rating || 5.0,
+                reviewsCount: p.reviewsCount || 0
             }));
             const { error } = await supabase.from('fc_products').upsert(prodsToUpsert);
             if (error) console.error("Erro saveProducts:", error);
@@ -1116,7 +1129,12 @@ const FutDB = {
             if (error) { console.error("Erro getProductById:", error); return null; }
             return {
                 ...data,
-                promoPrice: data.promoprice,
+                sku: data.sku || "",
+                team: data.team || "",
+                price: data.price !== undefined && data.price !== null ? Number(data.price) : 0.0,
+                promoPrice: data.promoprice !== undefined && data.promoprice !== null ? Number(data.promoprice) : null,
+                rating: data.rating !== undefined && data.rating !== null ? Number(data.rating) : 5.0,
+                reviewsCount: data.reviewsCount !== undefined && data.reviewsCount !== null ? Number(data.reviewsCount) : (data.ratings ? data.ratings.length : 0),
                 reviews: data.ratings || []
             };
         }
@@ -1145,7 +1163,11 @@ const FutDB = {
                 image: product.image || (product.images && product.images[0]) || null,
                 images: product.images || [],
                 sizes: product.sizes || [],
-                ratings: product.reviews || []
+                ratings: product.reviews || [],
+                sku: product.sku || "",
+                team: product.team || "",
+                rating: product.rating || 5.0,
+                reviewsCount: product.reviewsCount || 0
             };
             const { error } = await supabase.from('fc_products').insert(prodToInsert);
             if (error) {
@@ -1164,7 +1186,7 @@ const FutDB = {
     },
     updateProduct: async function(updatedProd) {
         if (useSupabase) {
-            const { data: existing } = await supabase.from('fc_products').select('ratings').eq('id', updatedProd.id).single();
+            const { data: existing } = await supabase.from('fc_products').select('ratings, sku, team, rating, reviewsCount').eq('id', updatedProd.id).single();
             const prodToUpsert = {
                 id: updatedProd.id,
                 name: updatedProd.name,
@@ -1180,7 +1202,11 @@ const FutDB = {
                 image: updatedProd.image || (updatedProd.images && updatedProd.images[0]) || null,
                 images: updatedProd.images || [],
                 sizes: updatedProd.sizes || [],
-                ratings: updatedProd.reviews || (existing ? existing.ratings : [])
+                ratings: updatedProd.reviews || (existing ? existing.ratings : []),
+                sku: updatedProd.sku || (existing ? existing.sku : "") || "",
+                team: updatedProd.team || (existing ? existing.team : "") || "",
+                rating: updatedProd.rating || (existing ? existing.rating : 5.0) || 5.0,
+                reviewsCount: updatedProd.reviewsCount || (existing ? existing.reviewsCount : 0) || 0
             };
             const { error } = await supabase.from('fc_products').upsert(prodToUpsert);
             if (error) {
