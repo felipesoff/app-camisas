@@ -1324,7 +1324,7 @@ const FutDB = {
             if (error) { console.error("Erro getOrders:", error); return []; }
             return (data || []).map(o => ({
                 id: o.id,
-                date: o.created_at.split('T')[0],
+                date: o.created_at ? o.created_at.split('T')[0] : (o.date || new Date().toISOString().split('T')[0]),
                 userEmail: o.user_email,
                 items: o.items,
                 total: o.total,

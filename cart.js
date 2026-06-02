@@ -474,6 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
             shipping: shippingFee,
             discount: discountVal,
             total: total,
+            userEmail: currentUser.email,
             couponCode: appliedCoupon ? appliedCoupon.code : null,
             paymentMethod: paymentMethod === "pix" ? "PIX" : paymentMethod === "card" ? "Cartão de Crédito" : "Boleto Bancário",
             address: `${address.street}, Nº ${address.number} - ${address.city}/${address.state}`
