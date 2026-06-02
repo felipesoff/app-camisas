@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.title = `FutCommerce | ${product.name}`;
 
     // --- CARREGAR DADOS DO PRODUTO NO DOM ---
-    pBrandTeam.textContent = `${product.brand} | ${product.team}`;
+    pBrandTeam.textContent = `${product.brand ? product.brand + " | " : ""}${product.team || ""}`;
     pName.textContent = product.name;
     pSubtitle.textContent = product.title;
     pDescription.textContent = product.description;
@@ -454,7 +454,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Submissão do Formulário de Avaliação
-    btnSubmitReview.addEventListener("click", () => {
+    btnSubmitReview.addEventListener("click", async () => {
         const author = formAuthorInput.value.trim();
         const text = formReviewText.value.trim();
 
