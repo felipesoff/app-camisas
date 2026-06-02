@@ -1087,6 +1087,8 @@ const FutDB = {
                 promoPrice: p.promoprice !== undefined && p.promoprice !== null ? Number(p.promoprice) : null,
                 rating: p.rating !== undefined && p.rating !== null ? Number(p.rating) : 5.0,
                 reviewsCount: p.reviewsCount !== undefined && p.reviewsCount !== null ? Number(p.reviewsCount) : (p.ratings ? p.ratings.length : 0),
+                images: p.images || [],
+                sizes: p.sizes || [],
                 reviews: p.ratings || []
             }));
         }
@@ -1135,6 +1137,8 @@ const FutDB = {
                 promoPrice: data.promoprice !== undefined && data.promoprice !== null ? Number(data.promoprice) : null,
                 rating: data.rating !== undefined && data.rating !== null ? Number(data.rating) : 5.0,
                 reviewsCount: data.reviewsCount !== undefined && data.reviewsCount !== null ? Number(data.reviewsCount) : (data.ratings ? data.ratings.length : 0),
+                images: data.images || [],
+                sizes: data.sizes || [],
                 reviews: data.ratings || []
             };
         }
