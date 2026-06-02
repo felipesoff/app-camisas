@@ -1059,9 +1059,6 @@ function initDatabase() {
     if (!localStorage.getItem("fc_cart")) {
         localStorage.setItem("fc_cart", JSON.stringify([]));
     }
-    if (!localStorage.getItem("fc_current_user")) {
-        localStorage.setItem("fc_current_user", JSON.stringify(DEFAULT_USERS.client));
-    }
 }
 
 // Executar inicialização imediata e seed do Supabase
@@ -1324,7 +1321,7 @@ const FutDB = {
             if (error) { console.error("Erro getOrders:", error); return []; }
             return (data || []).map(o => ({
                 id: o.id,
-                date: o.created_at.split('T')[0],
+                date: o.created_at ? o.created_at.split('T')[0] : (o.date || new Date().toISOString().split('T')[0]),
                 userEmail: o.user_email,
                 items: o.items,
                 total: o.total,
@@ -1412,7 +1409,11 @@ const FutDB = {
                 status: newOrder.status,
                 tracking_history: newOrder.trackingHistory || []
             });
-            if (error) console.error("Erro createOrder:", error);
+            if (error) {
+                console.error("Erro createOrder:", error);
+                alert("Erro ao salvar pedido no Banco de Dados (Supabase): " + error.message + "\n\nPor favor, execute o comando:\nALTER TABLE fc_orders DISABLE ROW LEVEL SECURITY;\nno painel SQL do seu console do Supabase para desativar a política de segurança de linha e permitir compras.");
+                return null;
+            }
             window.dispatchEvent(new Event("fc_orders_updated"));
             this.clearCart();
             return newOrder;

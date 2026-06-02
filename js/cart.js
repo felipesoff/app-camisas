@@ -474,6 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
             shipping: shippingFee,
             discount: discountVal,
             total: total,
+            userEmail: currentUser.email,
             couponCode: appliedCoupon ? appliedCoupon.code : null,
             paymentMethod: paymentMethod === "pix" ? "PIX" : paymentMethod === "card" ? "Cartão de Crédito" : "Boleto Bancário",
             address: `${address.street}, Nº ${address.number} - ${address.city}/${address.state}`
@@ -510,6 +511,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Remover overlay
             overlay.remove();
+
+            if (!orderCreated) {
+                return; // Falha na gravação do pedido (ex: erro de banco/RLS)
+            }
 
             // Emitir sucesso
             alert(`✓ PEDIDO APROVADO! Código: ${orderCreated.id}\nSeu pagamento via ${orderCreated.paymentMethod} foi validado com sucesso. Obrigado pela sua compra!`);
