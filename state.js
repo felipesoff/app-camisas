@@ -1059,9 +1059,6 @@ function initDatabase() {
     if (!localStorage.getItem("fc_cart")) {
         localStorage.setItem("fc_cart", JSON.stringify([]));
     }
-    if (!localStorage.getItem("fc_current_user")) {
-        localStorage.setItem("fc_current_user", JSON.stringify(DEFAULT_USERS.client));
-    }
 }
 
 // Executar inicialização imediata e seed do Supabase
