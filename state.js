@@ -1474,6 +1474,21 @@ const FutDB = {
                 } catch (e) {}
             }
         } else {
+            // Permitir login local com o usuário de testes mesmo usando Supabase
+            if (normEmail === "torcedor@gmail.com" && normPassword === "123") {
+                const clientSession = { 
+                    email: "torcedor@gmail.com", 
+                    name: "Artur Vidal Silva",
+                    isAdmin: false,
+                    addresses: [
+                        { id: "addr-1", type: "Casa", street: "Av. Atlântica", number: "1540", complement: "Apto 302", neighborhood: "Copacabana", city: "Rio de Janeiro", state: "RJ", cep: "22021-001", default: true }
+                    ],
+                    favorites: ["prod-1", "prod-3"]
+                };
+                this.setCurrentUser(clientSession);
+                return clientSession;
+            }
+
             if (useSupabase) {
                 try {
                     const { data, error } = await supabase.auth.signInWithPassword({ email: normEmail, password: normPassword });
