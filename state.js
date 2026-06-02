@@ -1412,7 +1412,11 @@ const FutDB = {
                 status: newOrder.status,
                 tracking_history: newOrder.trackingHistory || []
             });
-            if (error) console.error("Erro createOrder:", error);
+            if (error) {
+                console.error("Erro createOrder:", error);
+                alert("Erro ao salvar pedido no Banco de Dados (Supabase): " + error.message + "\n\nPor favor, execute o comando:\nALTER TABLE fc_orders DISABLE ROW LEVEL SECURITY;\nno painel SQL do seu console do Supabase para desativar a política de segurança de linha e permitir compras.");
+                return null;
+            }
             window.dispatchEvent(new Event("fc_orders_updated"));
             this.clearCart();
             return newOrder;

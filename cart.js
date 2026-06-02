@@ -512,6 +512,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // Remover overlay
             overlay.remove();
 
+            if (!orderCreated) {
+                return; // Falha na gravação do pedido (ex: erro de banco/RLS)
+            }
+
             // Emitir sucesso
             alert(`✓ PEDIDO APROVADO! Código: ${orderCreated.id}\nSeu pagamento via ${orderCreated.paymentMethod} foi validado com sucesso. Obrigado pela sua compra!`);
 
