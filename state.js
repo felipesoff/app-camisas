@@ -1128,7 +1128,7 @@ const FutDB = {
     getProductById: async function(id) {
         if (useSupabase) {
             const { data, error } = await supabase.from('fc_products').select('*').eq('id', id).single();
-            if (error) { console.error("Erro getProductById:", error); return null; }
+            if (error || !data) { console.error("Erro getProductById:", error); return null; }
             return {
                 ...data,
                 sku: data.sku || "",

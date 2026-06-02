@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script>
+        window.addEventListener('error', function(event) {
+            alert("Erro global capturado:\nMensagem: " + event.message + "\nArquivo: " + event.filename + "\nLinha: " + event.lineno + ":" + event.colno);
+        });
+        window.addEventListener('unhandledrejection', function(event) {
+            alert("Erro assíncrono capturado:\nMotivo: " + (event.reason ? (event.reason.message || event.reason) : event));
+        });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Confira os detalhes completos deste manto sagrado. Escolha o seu tamanho ideal e sinta o peso da camisa.">
