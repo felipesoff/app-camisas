@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const products = await FutDB.getProducts();
         const filtered = products.filter(p => 
             p.name.toLowerCase().includes(query) || 
-            p.brand.toLowerCase().includes(query) || 
+            (p.brand || "").toLowerCase().includes(query) || 
             p.team.toLowerCase().includes(query) || 
             p.category.toLowerCase().includes(query)
         );
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <img src="${prod.images[0]}" alt="${prod.name}">
                     <div class="info">
                         <h4>${prod.name}</h4>
-                        <p>${prod.brand} | R$ ${displayPrice.toFixed(2).replace('.', ',')}</p>
+                        <p>${prod.brand ? prod.brand + " | " : ""}R$ ${displayPrice.toFixed(2).replace('.', ',')}</p>
                     </div>
                 `;
                 item.addEventListener("click", () => {
@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Filtrar por marca esportiva
         if (selectedBrand !== "all") {
-            filtered = filtered.filter(p => p.brand.toLowerCase() === selectedBrand.toLowerCase());
+            filtered = filtered.filter(p => (p.brand || "").toLowerCase() === selectedBrand.toLowerCase());
         }
 
         // Filtrar apenas promoções se a checkbox estiver marcada
@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <img src="${prod.images[0]}" alt="${prod.name}" loading="lazy">
                 </div>
                 <div class="card-info">
-                    <span class="card-category">${prod.brand} | ${prod.team}</span>
+                    <span class="card-category">${prod.brand ? prod.brand + " | " : ""}${prod.team}</span>
                     <h3 class="card-title">${prod.name}</h3>
                     <div class="card-rating">
                         <i class="fa-solid fa-star"></i>

@@ -478,7 +478,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <img src="${prod.images[0]}" alt="${prod.name}" style="max-height: 140px;">
                 </div>
                 <div class="card-info" style="padding: 14px;">
-                    <span class="card-category" style="font-size: 10px;">${prod.brand}</span>
+                    <span class="card-category" style="font-size: 10px;">${prod.brand || prod.team || ""}</span>
                     <h3 class="card-title" style="font-size: 13px; height: 34px; margin-bottom: 6px;">${prod.name}</h3>
                     <div class="card-footer" style="margin-top: 10px;">
                         ${priceHTML}

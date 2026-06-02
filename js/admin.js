@@ -541,19 +541,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // SALVAR PRODUTO (CADASTRAR OU ATUALIZAR)
     btnSaveProduct.addEventListener("click", async () => {
-        const name = fName.value.trim();
-        const sku = fSku.value.trim();
-        const price = parseFloat(fPrice.value);
-        const promoPrice = fPromoPrice.value ? parseFloat(fPromoPrice.value) : null;
-        const brand = fBrand.value.trim();
-        const team = fTeam.value.trim();
-        const category = fCategory.value;
-        const description = fDescription.value.trim();
-
-        if (!name || !sku || isNaN(price) || !team || !description) {
-            alert("Por favor, preencha todos os campos obrigatórios (*)");
-            return;
-        }
+        const name = fName.value.trim() || "Camisa Sem Nome";
+        const sku = fSku.value.trim() || "SKU-" + Date.now();
+        const price = isNaN(parseFloat(fPrice.value)) ? 0.0 : parseFloat(fPrice.value);
+        const promoPrice = fPromoPrice.value && !isNaN(parseFloat(fPromoPrice.value)) ? parseFloat(fPromoPrice.value) : null;
+        const brand = ""; // Marca vazia pois o campo foi removido
+        const team = fTeam.value.trim() || "Sem Time";
+        const category = fCategory.value || "Outros";
+        const description = fDescription.value.trim() || "Sem descrição";
 
         // Criar arr de tamanhos com os tamanhos padrão
         const sizesArr = [
@@ -564,8 +559,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             { name: "XG", stock: parseInt(fSizeXG.value) || 0, price: (promoPrice || price) + (category === "Retrô" ? 0 : 20) }
         ];
 
-        // Ler tamanhos adicionais
-        let customSizesValid = true;
+        // Ler tamanhos adicionais (ignora linhas vazias/incompletas)
         if (customSizesList) {
             const customRows = customSizesList.querySelectorAll(".custom-size-row");
             customRows.forEach(row => {
@@ -575,7 +569,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const szPrice = parseFloat(inputs[2].value);
 
                 if (!szName || isNaN(szStock) || isNaN(szPrice)) {
-                    customSizesValid = false;
                     return;
                 }
 
@@ -585,11 +578,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     price: szPrice
                 });
             });
-        }
-
-        if (!customSizesValid) {
-            alert("Por favor, preencha todos os campos dos tamanhos adicionais!");
-            return;
         }
 
         // MOCK JERSEY VECTOR GENERATOR (INCLUIR SVG DINÂMICO DO STATE.JS)
@@ -1021,7 +1009,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             label.innerHTML = `
                 <input type="checkbox" value="${p.id}" class="category-product-checkbox" ${isChecked ? 'checked' : ''} style="width: 16px; height: 16px; margin: 0; cursor: pointer;">
-                <span style="flex-grow: 1; color: #fff;">${p.name} <span style="font-size: 11px; color: var(--color-text-sub);">(${p.brand})</span>${otherCatLabel}</span>
+                <span style="flex-grow: 1; color: #fff;">${p.name}${p.brand ? ` <span style="font-size: 11px; color: var(--color-text-sub);">(${p.brand})</span>` : ""}${otherCatLabel}</span>
             `;
             categoryProductAssociationList.appendChild(label);
         });
@@ -1283,7 +1271,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Nova marca
                 const success = await FutDB.addBrand(brandData);
                 if (!success) {
-                    alert("Já existe uma marca cadastrada com este nome!");
+                    alert("[TESTE-CODIGO-NOVO] Não foi possível cadastrar a marca. Ela já existe ou ocorreu um erro de banco!");
                     return;
                 }
             }

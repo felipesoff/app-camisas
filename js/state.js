@@ -830,30 +830,38 @@ if (window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.URL && window.SUPABASE_CONF
 async function seedDatabaseIfEmpty() {
     if (!useSupabase) return;
     try {
-        const { data: prods, error } = await supabase.from('fc_products').select('id');
-        if (error) {
-            console.error("Erro ao conectar com Supabase:", error.message);
-            return;
-        }
-        if (!prods || prods.length === 0) {
-            console.log("Supabase vazio! Semeando dados padrão...");
-
-            // 1. Categorias
+        // 1. Categorias
+        const { data: cats, error: errCats } = await supabase.from('fc_categories').select('name');
+        if (errCats) throw new Error("Erro ao buscar categorias: " + errCats.message);
+        if (!cats || cats.length === 0) {
+            console.log("Supabase: Semeando categorias...");
             const catsToInsert = DEFAULT_CATEGORIES.map(c => ({
                 name: c.name,
                 subcategories: c.subcategories || []
             }));
-            await supabase.from('fc_categories').insert(catsToInsert);
+            const { error: insErr } = await supabase.from('fc_categories').insert(catsToInsert);
+            if (insErr) throw new Error("Erro ao semear categorias: " + insErr.message);
+        }
 
-            // 2. Marcas
+        // 2. Marcas
+        const { data: brands, error: errBrands } = await supabase.from('fc_brands').select('name');
+        if (errBrands) throw new Error("Erro ao buscar marcas: " + errBrands.message);
+        if (!brands || brands.length === 0) {
+            console.log("Supabase: Semeando marcas...");
             const brandsToInsert = DEFAULT_BRANDS.map(b => ({
                 name: b.name,
                 icon: b.icon || null,
                 logo: null
             }));
-            await supabase.from('fc_brands').insert(brandsToInsert);
+            const { error: insErr } = await supabase.from('fc_brands').insert(brandsToInsert);
+            if (insErr) throw new Error("Erro ao semear marcas: " + insErr.message);
+        }
 
-            // 3. Produtos
+        // 3. Produtos
+        const { data: prods, error: errProds } = await supabase.from('fc_products').select('id');
+        if (errProds) throw new Error("Erro ao buscar produtos: " + errProds.message);
+        if (!prods || prods.length === 0) {
+            console.log("Supabase: Semeando produtos...");
             const prodsToInsert = DEFAULT_PRODUCTS.map(p => ({
                 id: p.id,
                 name: p.name,
@@ -869,11 +877,21 @@ async function seedDatabaseIfEmpty() {
                 image: p.image || (p.images && p.images[0]) || null,
                 images: p.images || [],
                 sizes: p.sizes || [],
-                ratings: p.reviews || []
+                ratings: p.reviews || [],
+                sku: p.sku || "",
+                team: p.team || "",
+                rating: p.rating || 5.0,
+                reviewsCount: p.reviewsCount || 0
             }));
-            await supabase.from('fc_products').insert(prodsToInsert);
+            const { error: insErr } = await supabase.from('fc_products').insert(prodsToInsert);
+            if (insErr) throw new Error("Erro ao semear produtos: " + insErr.message);
+        }
 
-            // 4. Banners & Popups
+        // 4. Banners & Popups
+        const { data: banners, error: errBanners } = await supabase.from('fc_banners').select('id');
+        if (errBanners) throw new Error("Erro ao buscar banners: " + errBanners.message);
+        if (!banners || banners.length === 0) {
+            console.log("Supabase: Semeando banners...");
             const bannersToInsert = DEFAULT_BANNERS.map((b, idx) => ({
                 id: idx + 1,
                 image: b.image,
@@ -884,8 +902,14 @@ async function seedDatabaseIfEmpty() {
                 link: b.link || null,
                 active: b.active !== false
             }));
-            await supabase.from('fc_banners').insert(bannersToInsert);
+            const { error: insErr } = await supabase.from('fc_banners').insert(bannersToInsert);
+            if (insErr) throw new Error("Erro ao semear banners: " + insErr.message);
+        }
 
+        const { data: popups, error: errPopups } = await supabase.from('fc_popups').select('id');
+        if (errPopups) throw new Error("Erro ao buscar popups: " + errPopups.message);
+        if (!popups || popups.length === 0) {
+            console.log("Supabase: Semeando popup...");
             const popupToInsert = {
                 id: 1,
                 active: DEFAULT_POPUPS.active,
@@ -896,12 +920,13 @@ async function seedDatabaseIfEmpty() {
                 btn_text: DEFAULT_POPUPS.btnText,
                 placeholder: DEFAULT_POPUPS.placeholder
             };
-            await supabase.from('fc_popups').insert(popupToInsert);
-
-            console.log("Dados padrão semeados no Supabase com sucesso!");
+            const { error: insErr } = await supabase.from('fc_popups').insert(popupToInsert);
+            if (insErr) throw new Error("Erro ao semear popup: " + insErr.message);
         }
+        console.log("Supabase: Verificação de seed concluída com sucesso!");
     } catch (e) {
         console.error("Erro inesperado ao semear dados:", e);
+        alert("Erro de Banco (Supabase): " + e.message);
     }
 }
 
@@ -1056,7 +1081,14 @@ const FutDB = {
             if (error) { console.error("Erro getProducts:", error); return []; }
             return (data || []).map(p => ({
                 ...p,
-                promoPrice: p.promoprice,
+                sku: p.sku || "",
+                team: p.team || "",
+                price: p.price !== undefined && p.price !== null ? Number(p.price) : 0.0,
+                promoPrice: p.promoprice !== undefined && p.promoprice !== null ? Number(p.promoprice) : null,
+                rating: p.rating !== undefined && p.rating !== null ? Number(p.rating) : 5.0,
+                reviewsCount: p.reviewsCount !== undefined && p.reviewsCount !== null ? Number(p.reviewsCount) : (p.ratings ? p.ratings.length : 0),
+                images: p.images || [],
+                sizes: p.sizes || [],
                 reviews: p.ratings || []
             }));
         }
@@ -1079,7 +1111,11 @@ const FutDB = {
                 image: p.image || (p.images && p.images[0]) || null,
                 images: p.images || [],
                 sizes: p.sizes || [],
-                ratings: p.reviews || []
+                ratings: p.reviews || [],
+                sku: p.sku || "",
+                team: p.team || "",
+                rating: p.rating || 5.0,
+                reviewsCount: p.reviewsCount || 0
             }));
             const { error } = await supabase.from('fc_products').upsert(prodsToUpsert);
             if (error) console.error("Erro saveProducts:", error);
@@ -1092,10 +1128,17 @@ const FutDB = {
     getProductById: async function(id) {
         if (useSupabase) {
             const { data, error } = await supabase.from('fc_products').select('*').eq('id', id).single();
-            if (error) { console.error("Erro getProductById:", error); return null; }
+            if (error || !data) { console.error("Erro getProductById:", error); return null; }
             return {
                 ...data,
-                promoPrice: data.promoprice,
+                sku: data.sku || "",
+                team: data.team || "",
+                price: data.price !== undefined && data.price !== null ? Number(data.price) : 0.0,
+                promoPrice: data.promoprice !== undefined && data.promoprice !== null ? Number(data.promoprice) : null,
+                rating: data.rating !== undefined && data.rating !== null ? Number(data.rating) : 5.0,
+                reviewsCount: data.reviewsCount !== undefined && data.reviewsCount !== null ? Number(data.reviewsCount) : (data.ratings ? data.ratings.length : 0),
+                images: data.images || [],
+                sizes: data.sizes || [],
                 reviews: data.ratings || []
             };
         }
@@ -1124,7 +1167,11 @@ const FutDB = {
                 image: product.image || (product.images && product.images[0]) || null,
                 images: product.images || [],
                 sizes: product.sizes || [],
-                ratings: product.reviews || []
+                ratings: product.reviews || [],
+                sku: product.sku || "",
+                team: product.team || "",
+                rating: product.rating || 5.0,
+                reviewsCount: product.reviewsCount || 0
             };
             const { error } = await supabase.from('fc_products').insert(prodToInsert);
             if (error) {
@@ -1143,7 +1190,7 @@ const FutDB = {
     },
     updateProduct: async function(updatedProd) {
         if (useSupabase) {
-            const { data: existing } = await supabase.from('fc_products').select('ratings').eq('id', updatedProd.id).single();
+            const { data: existing } = await supabase.from('fc_products').select('ratings, sku, team, rating, reviewsCount').eq('id', updatedProd.id).single();
             const prodToUpsert = {
                 id: updatedProd.id,
                 name: updatedProd.name,
@@ -1159,7 +1206,11 @@ const FutDB = {
                 image: updatedProd.image || (updatedProd.images && updatedProd.images[0]) || null,
                 images: updatedProd.images || [],
                 sizes: updatedProd.sizes || [],
-                ratings: updatedProd.reviews || (existing ? existing.ratings : [])
+                ratings: updatedProd.reviews || (existing ? existing.ratings : []),
+                sku: updatedProd.sku || (existing ? existing.sku : "") || "",
+                team: updatedProd.team || (existing ? existing.team : "") || "",
+                rating: updatedProd.rating || (existing ? existing.rating : 5.0) || 5.0,
+                reviewsCount: updatedProd.reviewsCount || (existing ? existing.reviewsCount : 0) || 0
             };
             const { error } = await supabase.from('fc_products').upsert(prodToUpsert);
             if (error) {
@@ -1621,7 +1672,10 @@ const FutDB = {
     addCategory: async function(category) {
         if (useSupabase) {
             const { error } = await supabase.from('fc_categories').insert(category);
-            if (error) { console.error("Erro addCategory:", error); return false; }
+            if (error) {
+                console.error("Erro addCategory:", error);
+                throw new Error("Erro no Supabase ao adicionar categoria: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_categories_updated"));
             return true;
         }
@@ -1636,7 +1690,10 @@ const FutDB = {
     updateCategory: async function(oldName, updatedCategory) {
         if (useSupabase) {
             const { error } = await supabase.from('fc_categories').update(updatedCategory).eq('name', oldName);
-            if (error) { console.error("Erro updateCategory:", error); return false; }
+            if (error) {
+                console.error("Erro updateCategory:", error);
+                throw new Error("Erro no Supabase ao atualizar categoria: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_categories_updated"));
             return true;
         }
@@ -1735,7 +1792,10 @@ const FutDB = {
     addBrand: async function(brand) {
         if (useSupabase) {
             const { error } = await supabase.from('fc_brands').insert(brand);
-            if (error) { console.error("Erro addBrand:", error); return false; }
+            if (error) {
+                console.error("Erro addBrand:", error);
+                throw new Error("Erro no Supabase ao adicionar marca: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_brands_updated"));
             return true;
         }
@@ -1750,7 +1810,10 @@ const FutDB = {
     updateBrand: async function(oldName, updatedBrand) {
         if (useSupabase) {
             const { error } = await supabase.from('fc_brands').update(updatedBrand).eq('name', oldName);
-            if (error) { console.error("Erro updateBrand:", error); return false; }
+            if (error) {
+                console.error("Erro updateBrand:", error);
+                throw new Error("Erro no Supabase ao atualizar marca: " + error.message);
+            }
             window.dispatchEvent(new Event("fc_brands_updated"));
             return true;
         }
